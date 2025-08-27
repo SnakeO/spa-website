@@ -289,6 +289,13 @@ body {
     color: var(--cream);
 }
 
+/* Mobile spacing fix for about section image */
+@media (max-width: 767px) {
+    #about .col-lg-6 img {
+        margin-top: 2rem;
+    }
+}
+
 .modal-content {
     border: 2px solid var(--gold);
 }
