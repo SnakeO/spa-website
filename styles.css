@@ -242,6 +242,11 @@ body {
     font-weight: bold;
 }
 
+.pricing-card .card-header h3 {
+    font-size: 1.15rem;
+    margin: 0;
+}
+
 .pricing-card.featured .card-header {
     background: linear-gradient(135deg, var(--dark-red) 0%, var(--burgundy) 100%);
     color: var(--cream);
@@ -432,24 +437,35 @@ body {
     transform: scale(1.05);
 }
 
-.language-switcher {
-    position: fixed;
-    top: 100px;
-    right: 20px;
-    z-index: 1000;
+/* Language selector styling - inline with navbar */
+.language-selector {
+    display: flex;
+    gap: 5px;
+    background: rgba(255, 255, 255, 0.1);
+    padding: 5px;
+    border-radius: 8px;
+    border: 1px solid rgba(212, 175, 55, 0.3);
 }
 
-.language-switcher .btn {
-    background: var(--white);
-    border: 2px solid var(--gold);
-    color: var(--dark-brown);
-    font-weight: bold;
-    padding: 8px 16px;
-    border-radius: 25px;
-    box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+.language-selector .lang-link {
+    padding: 6px 10px;
+    text-decoration: none;
+    color: var(--cream);
+    border-radius: 6px;
+    transition: all 0.3s ease;
+    font-size: 14px;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 6px;
 }
 
-.language-switcher .btn:hover {
+.language-selector .lang-link:hover {
+    background: rgba(212, 175, 55, 0.2);
+    color: var(--gold);
+}
+
+.language-selector .lang-link.active {
     background: var(--gold);
     color: var(--dark-brown);
 }
@@ -479,4 +495,12 @@ body {
 
 .service-details li:last-child {
     border-bottom: none;
+}
+
+/* Service modal image styling */
+#serviceModal .modal-body img {
+    max-height: 400px;
+    width: 100%;
+    object-fit: cover;
+    border-radius: 8px;
 }
