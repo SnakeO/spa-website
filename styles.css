@@ -10,6 +10,10 @@
     --black: #1a1a1a;
 }
 
+html {
+    scroll-behavior: smooth;
+}
+
 body {
     font-family: 'Noto Sans JP', 'Hiragino Sans', 'Yu Gothic', sans-serif;
     padding-top: 80px;
@@ -503,4 +507,9 @@ body {
     width: 100%;
     object-fit: cover;
     border-radius: 8px;
+}
+
+/* Anchor offset for fixed navbar */
+#thai-massage, #aroma-oil, #special-treatments, #foot-massage {
+    scroll-margin-top: 100px;
 }
