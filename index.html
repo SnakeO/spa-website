@@ -394,7 +394,38 @@
                                     </select>
                                 </div>
                                 <div class="mb-3">
-                                    <input type="datetime-local" name="datetime" class="form-control" required>
+                                    <select name="date" class="form-select" id="dateSelect" required>
+                                        <option value="">日付を選択</option>
+                                    </select>
+                                </div>
+                                <div class="mb-3">
+                                    <select name="time" class="form-select" id="timeSelect" required>
+                                        <option value="">時間を選択</option>
+                                        <option value="12:00">12:00</option>
+                                        <option value="12:30">12:30</option>
+                                        <option value="13:00">13:00</option>
+                                        <option value="13:30">13:30</option>
+                                        <option value="14:00">14:00</option>
+                                        <option value="14:30">14:30</option>
+                                        <option value="15:00">15:00</option>
+                                        <option value="15:30">15:30</option>
+                                        <option value="16:00">16:00</option>
+                                        <option value="16:30">16:30</option>
+                                        <option value="17:00">17:00</option>
+                                        <option value="17:30">17:30</option>
+                                        <option value="18:00">18:00</option>
+                                        <option value="18:30">18:30</option>
+                                        <option value="19:00">19:00</option>
+                                        <option value="19:30">19:30</option>
+                                        <option value="20:00">20:00</option>
+                                        <option value="20:30">20:30</option>
+                                        <option value="21:00">21:00</option>
+                                        <option value="21:30">21:30</option>
+                                        <option value="22:00">22:00</option>
+                                        <option value="22:30">22:30</option>
+                                        <option value="23:00">23:00</option>
+                                        <option value="23:30">23:30</option>
+                                    </select>
                                 </div>
                                 <div class="mb-3">
                                     <textarea name="message" class="form-control" rows="3" placeholder="ご要望・メッセージ"></textarea>
@@ -516,6 +547,41 @@
     
     <!-- Formspree submission handler -->
     <script>
+        // Populate date dropdown with next 14 days
+        function populateDateDropdown() {
+            var dateSelect = document.getElementById('dateSelect');
+            if (!dateSelect) return;
+            
+            var today = new Date();
+            var days = ['日', '月', '火', '水', '木', '金', '土'];
+            var months = ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月'];
+            
+            for (var i = 0; i < 14; i++) {
+                var date = new Date(today);
+                date.setDate(today.getDate() + i);
+                
+                var dayName = days[date.getDay()];
+                var monthName = months[date.getMonth()];
+                var dayNum = date.getDate();
+                
+                var option = document.createElement('option');
+                option.value = date.toISOString().split('T')[0];
+                
+                if (i === 0) {
+                    option.text = monthName + dayNum + '日 (' + dayName + ') - 今日';
+                } else if (i === 1) {
+                    option.text = monthName + dayNum + '日 (' + dayName + ') - 明日';
+                } else {
+                    option.text = monthName + dayNum + '日 (' + dayName + ')';
+                }
+                
+                dateSelect.appendChild(option);
+            }
+        }
+        
+        // Call on page load
+        document.addEventListener('DOMContentLoaded', populateDateDropdown);
+        
         // Handle main booking form
         var bookingForm = document.getElementById("bookingForm");
         if (bookingForm) {
