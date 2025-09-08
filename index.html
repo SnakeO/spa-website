@@ -374,18 +374,18 @@
                     <div class="card">
                         <div class="card-body">
                             <h4 class="card-title mb-4">ご予約フォーム</h4>
-                            <form id="bookingForm">
+                            <form id="bookingForm" action="https://formspree.io/f/mgvlrpdd" method="POST">
                                 <div class="mb-3">
-                                    <input type="text" class="form-control" placeholder="お名前" required>
+                                    <input type="text" name="name" class="form-control" placeholder="お名前" required>
                                 </div>
                                 <div class="mb-3">
-                                    <input type="email" class="form-control" placeholder="メールアドレス" required>
+                                    <input type="email" name="email" class="form-control" placeholder="メールアドレス" required>
                                 </div>
                                 <div class="mb-3">
-                                    <input type="tel" class="form-control" placeholder="電話番号" required>
+                                    <input type="tel" name="phone" class="form-control" placeholder="電話番号" required>
                                 </div>
                                 <div class="mb-3">
-                                    <select class="form-select" required>
+                                    <select name="service" class="form-select" required>
                                         <option value="">サービスを選択</option>
                                         <option>伝統タイマッサージ</option>
                                         <option>アロマオイル</option>
@@ -394,12 +394,13 @@
                                     </select>
                                 </div>
                                 <div class="mb-3">
-                                    <input type="datetime-local" class="form-control" required>
+                                    <input type="datetime-local" name="datetime" class="form-control" required>
                                 </div>
                                 <div class="mb-3">
-                                    <textarea class="form-control" rows="3" placeholder="ご要望・メッセージ"></textarea>
+                                    <textarea name="message" class="form-control" rows="3" placeholder="ご要望・メッセージ"></textarea>
                                 </div>
-                                <button type="submit" class="btn btn-primary w-100">予約する</button>
+                                <button type="submit" class="btn btn-primary w-100" id="bookingForm-button">予約する</button>
+                                <p id="bookingForm-status" class="mt-3 text-center"></p>
                             </form>
                         </div>
                     </div>
@@ -423,24 +424,25 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
-                    <form id="quickBookingForm">
+                    <form id="quickBookingForm" action="https://formspree.io/f/mgvlrpdd" method="POST">
                         <div class="mb-3">
-                            <input type="text" class="form-control" placeholder="お名前" required>
+                            <input type="text" name="name" class="form-control" placeholder="お名前" required>
                         </div>
                         <div class="mb-3">
-                            <input type="tel" class="form-control" placeholder="電話番号" required>
+                            <input type="tel" name="phone" class="form-control" placeholder="電話番号" required>
                         </div>
                         <div class="mb-3">
-                            <select class="form-select" required>
+                            <select name="service" class="form-select" required>
                                 <option value="">サービスを選択</option>
-                                <option>伝統タイマッサージ (60分)</option>
-                                <option>伝統タイマッサージ (90分)</option>
-                                <option>伝統タイマッサージ (120分)</option>
-                                <option>足裏リフレクソロジー</option>
-                                <option>アロマオイルマッサージ</option>
+                                <option>伝統タイマッサージ (70分)</option>
+                                <option>伝統タイマッサージ (100分)</option>
+                                <option>伝統タイマッサージ (130分)</option>
+                                <option>アロマオイル</option>
+                                <option>足裏マッサージ</option>
                             </select>
                         </div>
-                        <button type="submit" class="btn btn-primary w-100">今すぐ予約</button>
+                        <button type="submit" class="btn btn-primary w-100" id="quickBookingForm-button">今すぐ予約</button>
+                        <p id="quickBookingForm-status" class="mt-3 text-center"></p>
                     </form>
                 </div>
             </div>
@@ -511,5 +513,91 @@
     <script src="js/bootstrap.bundle.min.js"></script>
     <script src="js/swiper-bundle.min.js"></script>
     <script src="script.js"></script>
+    
+    <!-- Formspree submission handler -->
+    <script>
+        // Handle main booking form
+        var bookingForm = document.getElementById("bookingForm");
+        if (bookingForm) {
+            bookingForm.addEventListener("submit", async function(event) {
+                event.preventDefault();
+                var status = document.getElementById("bookingForm-status");
+                var button = document.getElementById("bookingForm-button");
+                var data = new FormData(event.target);
+                
+                button.disabled = true;
+                button.textContent = "送信中...";
+                
+                fetch(event.target.action, {
+                    method: bookingForm.method,
+                    body: data,
+                    headers: {
+                        'Accept': 'application/json'
+                    }
+                }).then(response => {
+                    if (response.ok) {
+                        status.innerHTML = "<span class='text-success'>ご予約ありがとうございます！すぐにご連絡いたします。</span>";
+                        bookingForm.reset();
+                    } else {
+                        response.json().then(data => {
+                            if (Object.hasOwn(data, 'errors')) {
+                                status.innerHTML = "<span class='text-danger'>" + data["errors"].map(error => error["message"]).join(", ") + "</span>";
+                            } else {
+                                status.innerHTML = "<span class='text-danger'>送信エラーが発生しました。お電話でご予約ください。</span>";
+                            }
+                        });
+                    }
+                }).catch(error => {
+                    status.innerHTML = "<span class='text-danger'>送信エラーが発生しました。お電話でご予約ください。</span>";
+                }).finally(() => {
+                    button.disabled = false;
+                    button.textContent = "予約する";
+                });
+            });
+        }
+        
+        // Handle quick booking form
+        var quickForm = document.getElementById("quickBookingForm");
+        if (quickForm) {
+            quickForm.addEventListener("submit", async function(event) {
+                event.preventDefault();
+                var status = document.getElementById("quickBookingForm-status");
+                var button = document.getElementById("quickBookingForm-button");
+                var data = new FormData(event.target);
+                
+                button.disabled = true;
+                button.textContent = "送信中...";
+                
+                fetch(event.target.action, {
+                    method: quickForm.method,
+                    body: data,
+                    headers: {
+                        'Accept': 'application/json'
+                    }
+                }).then(response => {
+                    if (response.ok) {
+                        status.innerHTML = "<span class='text-success'>ご予約ありがとうございます！</span>";
+                        quickForm.reset();
+                        setTimeout(() => {
+                            bootstrap.Modal.getInstance(document.getElementById('bookingModal')).hide();
+                        }, 2000);
+                    } else {
+                        response.json().then(data => {
+                            if (Object.hasOwn(data, 'errors')) {
+                                status.innerHTML = "<span class='text-danger'>" + data["errors"].map(error => error["message"]).join(", ") + "</span>";
+                            } else {
+                                status.innerHTML = "<span class='text-danger'>送信エラーが発生しました。</span>";
+                            }
+                        });
+                    }
+                }).catch(error => {
+                    status.innerHTML = "<span class='text-danger'>送信エラーが発生しました。</span>";
+                }).finally(() => {
+                    button.disabled = false;
+                    button.textContent = "今すぐ予約";
+                });
+            });
+        }
+    </script>
 </body>
 </html>
