@@ -3,9 +3,28 @@ document.addEventListener('DOMContentLoaded', function() {
     const bookingForm = document.getElementById('bookingForm');
     const quickBookingForm = document.getElementById('quickBookingForm');
     const navbar = document.querySelector('.navbar');
-    
+
     let gallerySwiper = null;
-    
+    let resultsSwiper = null;
+
+    // Monday Promotion Banner Logic
+    function checkMondayPromo() {
+        const banner = document.getElementById('mondayBanner');
+        if (!banner) return;
+
+        const today = new Date();
+        const dayOfWeek = today.getDay(); // 0 = Sunday, 1 = Monday, etc.
+
+        if (dayOfWeek === 1) { // Monday
+            banner.classList.add('show');
+        } else {
+            banner.style.display = 'none';
+        }
+    }
+
+    // Call on page load
+    checkMondayPromo();
+
     navLinks.forEach(link => {
         link.addEventListener('click', function(e) {
             if (this.getAttribute('href').startsWith('#')) {
@@ -140,7 +159,37 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     });
-    
+
+    // Results modal gallery
+    const resultsThumbs = document.querySelectorAll('[data-bs-target="#resultsModal"]');
+    resultsThumbs.forEach((thumb, index) => {
+        thumb.addEventListener('click', function() {
+            const modal = document.getElementById('resultsModal');
+            if (modal) {
+                modal.addEventListener('shown.bs.modal', function() {
+                    if (!resultsSwiper) {
+                        resultsSwiper = new Swiper('.resultsModalSwiper', {
+                            navigation: {
+                                nextEl: '.swiper-button-next',
+                                prevEl: '.swiper-button-prev',
+                            },
+                            pagination: {
+                                el: '.swiper-pagination',
+                                clickable: true
+                            },
+                            keyboard: {
+                                enabled: true,
+                            },
+                            initialSlide: index
+                        });
+                    } else {
+                        resultsSwiper.slideTo(index, 0);
+                    }
+                }, { once: true });
+            }
+        });
+    });
+
     const serviceCards = document.querySelectorAll('.service-card');
     const serviceData = {
         'Traditional Thai Massage': {
@@ -163,9 +212,9 @@ document.addEventListener('DOMContentLoaded', function() {
                     </ul>
                     <h5>Pricing</h5>
                     <ul>
-                        <li>60 minute session: ¥6,000</li>
-                        <li>90 minute session: ¥8,500</li>
-                        <li>120 minute session: ¥11,000</li>
+                        <li>70 minute session: ¥5,000</li>
+                        <li>100 minute session: ¥7,000</li>
+                        <li>130 minute session: ¥9,000</li>
                     </ul>
                 </div>
             `
@@ -190,7 +239,6 @@ document.addEventListener('DOMContentLoaded', function() {
                     </ul>
                     <h5>Pricing</h5>
                     <ul>
-                        <li>30 minute session: ¥3,500</li>
                         <li>60 minute session: ¥6,000</li>
                     </ul>
                 </div>
@@ -216,34 +264,36 @@ document.addEventListener('DOMContentLoaded', function() {
                     </ul>
                     <h5>Pricing</h5>
                     <ul>
-                        <li>60 minute session: ¥7,500</li>
-                        <li>90 minute session: ¥10,500</li>
+                        <li>70 minute session: ¥9,000</li>
+                        <li>100 minute session: ¥13,000</li>
+                        <li>130 minute session: ¥16,000</li>
                     </ul>
                 </div>
             `
         },
-        'Thai Stretching Therapy': {
-            description: 'Passive stretching incorporating yoga poses. The therapist gently moves your body to achieve deep, therapeutic stretches.',
+        'Thai + Aroma Oil Combo': {
+            description: 'Luxurious combination of traditional Thai massage and aromatherapy oil massage for ultimate mind and body relaxation.',
             details: `
                 <div class="service-details">
                     <h5>Benefits</h5>
                     <ul>
-                        <li>Significantly improved flexibility</li>
-                        <li>Better posture</li>
-                        <li>Chronic pain relief</li>
-                        <li>Enhanced athletic performance</li>
+                        <li>Muscle tension relief and stretching benefits</li>
+                        <li>Deep relaxation and mental stability</li>
+                        <li>Improved blood circulation and metabolism</li>
+                        <li>Psychological benefits from aromatherapy</li>
                     </ul>
                     <h5>Treatment Includes</h5>
                     <ul>
-                        <li>Full body range of motion assessment</li>
-                        <li>Progressive stretching sequences</li>
-                        <li>Breath and movement coordination</li>
-                        <li>Aftercare advice</li>
+                        <li>Full body stretching with Thai traditional massage</li>
+                        <li>Relaxation massage with aromatic oils</li>
+                        <li>Choice of your preferred essential oil</li>
+                        <li>Private treatment in a fully enclosed room</li>
                     </ul>
                     <h5>Pricing</h5>
                     <ul>
-                        <li>45 minute session: ¥5,500</li>
-                        <li>60 minute session: ¥7,000</li>
+                        <li>70 minute session: ¥8,000</li>
+                        <li>100 minute session: ¥12,000</li>
+                        <li>130 minute session: ¥15,000</li>
                     </ul>
                 </div>
             `

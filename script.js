@@ -3,9 +3,28 @@ document.addEventListener('DOMContentLoaded', function() {
     const bookingForm = document.getElementById('bookingForm');
     const quickBookingForm = document.getElementById('quickBookingForm');
     const navbar = document.querySelector('.navbar');
-    
+
     let gallerySwiper = null;
-    
+    let resultsSwiper = null;
+
+    // Monday Promotion Banner Logic
+    function checkMondayPromo() {
+        const banner = document.getElementById('mondayBanner');
+        if (!banner) return;
+
+        const today = new Date();
+        const dayOfWeek = today.getDay(); // 0 = Sunday, 1 = Monday, etc.
+
+        if (dayOfWeek === 1) { // Monday
+            banner.classList.add('show');
+        } else {
+            banner.style.display = 'none';
+        }
+    }
+
+    // Call on page load
+    checkMondayPromo();
+
     navLinks.forEach(link => {
         link.addEventListener('click', function(e) {
             if (this.getAttribute('href').startsWith('#')) {
@@ -140,7 +159,37 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     });
-    
+
+    // Results modal gallery
+    const resultsThumbs = document.querySelectorAll('[data-bs-target="#resultsModal"]');
+    resultsThumbs.forEach((thumb, index) => {
+        thumb.addEventListener('click', function() {
+            const modal = document.getElementById('resultsModal');
+            if (modal) {
+                modal.addEventListener('shown.bs.modal', function() {
+                    if (!resultsSwiper) {
+                        resultsSwiper = new Swiper('.resultsModalSwiper', {
+                            navigation: {
+                                nextEl: '.swiper-button-next',
+                                prevEl: '.swiper-button-prev',
+                            },
+                            pagination: {
+                                el: '.swiper-pagination',
+                                clickable: true
+                            },
+                            keyboard: {
+                                enabled: true,
+                            },
+                            initialSlide: index
+                        });
+                    } else {
+                        resultsSwiper.slideTo(index, 0);
+                    }
+                }, { once: true });
+            }
+        });
+    });
+
     const serviceCards = document.querySelectorAll('.service-card');
     const serviceData = {
         '伝統タイマッサージ': {
@@ -163,9 +212,9 @@ document.addEventListener('DOMContentLoaded', function() {
                     </ul>
                     <h5>料金</h5>
                     <ul>
-                        <li>60分コース: ¥6,000</li>
-                        <li>90分コース: ¥8,500</li>
-                        <li>120分コース: ¥11,000</li>
+                        <li>70分コース: ¥5,000</li>
+                        <li>100分コース: ¥7,000</li>
+                        <li>130分コース: ¥9,000</li>
                     </ul>
                 </div>
             `
@@ -190,7 +239,6 @@ document.addEventListener('DOMContentLoaded', function() {
                     </ul>
                     <h5>料金</h5>
                     <ul>
-                        <li>30分コース: ¥3,500</li>
                         <li>60分コース: ¥6,000</li>
                     </ul>
                 </div>
@@ -216,34 +264,36 @@ document.addEventListener('DOMContentLoaded', function() {
                     </ul>
                     <h5>料金</h5>
                     <ul>
-                        <li>60分コース: ¥7,500</li>
-                        <li>90分コース: ¥10,500</li>
+                        <li>70分コース: ¥9,000</li>
+                        <li>100分コース: ¥13,000</li>
+                        <li>130分コース: ¥16,000</li>
                     </ul>
                 </div>
             `
         },
-        'タイストレッチ療法': {
-            description: 'ヨガのポーズを取り入れたパッシブストレッチング。セラピストがお客様の体を優しく動かし、深いストレッチを実現します。',
+        'タイ＋アロマオイルコンボ': {
+            description: '伝統タイマッサージとアロマオイルマッサージを組み合わせた贅沢なコンビネーション。心身ともに深いリラクゼーションを体験できます。',
             details: `
                 <div class="service-details">
                     <h5>効果</h5>
                     <ul>
-                        <li>柔軟性の大幅な向上</li>
-                        <li>姿勢の改善</li>
-                        <li>慢性的な痛みの緩和</li>
-                        <li>運動能力の向上</li>
+                        <li>筋肉の緊張緩和とストレッチ効果</li>
+                        <li>深いリラクゼーションと心の安定</li>
+                        <li>血行促進と新陳代謝の向上</li>
+                        <li>アロマによる心理的効果</li>
                     </ul>
                     <h5>施術内容</h5>
                     <ul>
-                        <li>全身の可動域チェック</li>
-                        <li>段階的なストレッチング</li>
-                        <li>呼吸と動きの調和</li>
-                        <li>アフターケアアドバイス</li>
+                        <li>タイ古式マッサージによる全身ストレッチ</li>
+                        <li>アロマオイルでのリラクゼーションマッサージ</li>
+                        <li>お好みのエッセンシャルオイル選択</li>
+                        <li>完全個室でのプライベート施術</li>
                     </ul>
                     <h5>料金</h5>
                     <ul>
-                        <li>45分コース: ¥5,500</li>
-                        <li>60分コース: ¥7,000</li>
+                        <li>70分コース: ¥8,000</li>
+                        <li>100分コース: ¥12,000</li>
+                        <li>130分コース: ¥15,000</li>
                     </ul>
                 </div>
             `
