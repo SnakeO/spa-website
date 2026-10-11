@@ -418,6 +418,11 @@
                                     </select>
                                 </div>
                                 <div class="mb-3">
+                                    <select name="course" class="form-select" id="courseSelect" required disabled>
+                                        <option value="">コースを選択</option>
+                                    </select>
+                                </div>
+                                <div class="mb-3">
                                     <select name="date" class="form-select" id="dateSelect" required>
                                         <option value="">日付を選択</option>
                                     </select>
@@ -635,6 +640,36 @@
         
         // Call on page load
         document.addEventListener('DOMContentLoaded', populateDateDropdown);
+
+        // Courses (duration + price) available for each service
+        var courseOptions = {
+            '伝統タイマッサージ': ['70分 - ¥5,000', '100分 - ¥7,000', '130分 - ¥9,000'],
+            'アロマオイル': ['70分 - ¥9,000', '100分 - ¥13,000', '130分 - ¥16,000'],
+            'タイ＋アロマオイル': ['70分 - ¥8,000', '100分 - ¥12,000', '130分 - ¥15,000'],
+            '足裏マッサージ': ['60分 - ¥6,000']
+        };
+
+        // Refill course dropdown to match the selected service
+        function updateCourseDropdown() {
+            var serviceSelect = document.querySelector('#bookingForm select[name="service"]');
+            var courseSelect = document.getElementById('courseSelect');
+            if (!serviceSelect || !courseSelect) return;
+
+            var courses = courseOptions[serviceSelect.value] || [];
+            courseSelect.length = 1;
+            courses.forEach(function(course) {
+                var option = document.createElement('option');
+                option.text = course;
+                courseSelect.appendChild(option);
+            });
+            courseSelect.disabled = courses.length === 0;
+            if (courses.length === 1) courseSelect.selectedIndex = 1;
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            var serviceSelect = document.querySelector('#bookingForm select[name="service"]');
+            if (serviceSelect) serviceSelect.addEventListener('change', updateCourseDropdown);
+        });
         
         // Handle main booking form
         var bookingForm = document.getElementById("bookingForm");
@@ -658,6 +693,7 @@
                     if (response.ok) {
                         status.innerHTML = "<span class='text-success'>ご予約ありがとうございます！すぐにご連絡いたします。</span>";
                         bookingForm.reset();
+                        updateCourseDropdown();
                     } else {
                         response.json().then(data => {
                             if (Object.hasOwn(data, 'errors')) {
