@@ -1,7 +1,6 @@
 document.addEventListener('DOMContentLoaded', function() {
     const navLinks = document.querySelectorAll('.navbar-nav a');
     const bookingForm = document.getElementById('bookingForm');
-    const quickBookingForm = document.getElementById('quickBookingForm');
     const navbar = document.querySelector('.navbar');
 
     let gallerySwiper = null;
@@ -122,10 +121,6 @@ document.addEventListener('DOMContentLoaded', function() {
     
     if (bookingForm) {
         handleFormSubmit(bookingForm, 'Booking Form');
-    }
-    
-    if (quickBookingForm) {
-        handleFormSubmit(quickBookingForm, 'Quick Booking');
     }
     
     const galleryThumbs = document.querySelectorAll('.gallery-thumb');
@@ -300,6 +295,15 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     };
     
+    // Booking form service option for each service card
+    const bookingServiceNames = {
+        'Traditional Thai Massage': 'Traditional Thai Massage',
+        'Foot Reflexology': 'Foot Massage',
+        'Aromatherapy Oil Massage': 'Aroma Oil',
+        'Thai + Aroma Oil Combo': 'Thai + Aroma Oil'
+    };
+    let selectedService = '';
+    
     serviceCards.forEach(card => {
         card.addEventListener('click', function() {
             const title = this.querySelector('.card-title').textContent;
@@ -307,6 +311,7 @@ document.addEventListener('DOMContentLoaded', function() {
             const serviceModal = document.getElementById('serviceModal');
             
             if (serviceModal && serviceData[title]) {
+                selectedService = title;
                 document.getElementById('serviceModalTitle').textContent = title;
                 document.getElementById('serviceModalImage').src = img.src;
                 document.getElementById('serviceModalImage').alt = img.alt;
@@ -318,6 +323,29 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     });
+    
+    // Book button in the service modal: preselect the service and scroll to the booking form
+    const serviceModalBook = document.getElementById('serviceModalBook');
+    if (serviceModalBook) {
+        serviceModalBook.addEventListener('click', function() {
+            const serviceModal = document.getElementById('serviceModal');
+            const serviceSelect = document.querySelector('#bookingForm select[name="service"]');
+            
+            if (serviceSelect && bookingServiceNames[selectedService]) {
+                serviceSelect.value = bookingServiceNames[selectedService];
+                serviceSelect.dispatchEvent(new Event('change'));
+            }
+            
+            serviceModal.addEventListener('hidden.bs.modal', function() {
+                const contact = document.getElementById('contact');
+                window.scrollTo({
+                    top: contact.offsetTop - navbar.offsetHeight,
+                    behavior: 'smooth'
+                });
+            }, { once: true });
+            bootstrap.Modal.getOrCreateInstance(serviceModal).hide();
+        });
+    }
     
     const dateTimeInput = document.querySelector('input[type="datetime-local"]');
     if (dateTimeInput) {
